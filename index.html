@@ -12,11 +12,11 @@
     </body>
     <script type="text/javascript" src="jquery-3.3.1.min.js" ></script>
     <script type="text/javascript">
-
+        var access_token = '';
 
         // 监听图片选择事件
         function getImg (event) {
-                var access_token = '';
+                
                 $.ajax({
                     header: {
                         "Content-Type": "application/json"
