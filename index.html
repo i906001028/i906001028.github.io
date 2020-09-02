@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+<!--        <meta http-equiv="Access-Control-Allow-Origin" content="*">-->
+
+        <title></title>
+    </head>
+    <body>
+        <input type="file" id="img" onchange="getImg(event)" />
+        <img id="showImg" src=""/>
+    </body>
+    <script type="text/javascript" src="jquery-3.3.1.min.js" ></script>
+    <script type="text/javascript">
+
+
+        // 监听图片选择事件
+        function getImg (event) {
+                var access_token = '';
+                $.ajax({
+                    header: {
+                        "Content-Type": "application/json"
+                    },
+                    type: "post",
+                    url: "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials",
+                    async: true,
+                    data: {
+                        client_id: "abQIpRS2jUuD9hNZS6I8iZUf",
+                        client_secret: "KxtuAqkuuqXa2AzUlz8hZDQMbwwpmQ6Z",
+                    },
+                    dataType: "json",
+                    timeout: 30000,
+                    success: function (data) {
+                        console.log("解析成功");
+                        console.log(data);
+                        access_token = data['access_token'];
+                    },
+                    error: function (xhr) {
+                        console.log("第一步失败");
+                    }
+                });
+            var imageBase = "";
+            var reader = new FileReader();
+            reader.readAsDataURL(event.target.files[0]);
+            reader.onload = function (e) {
+                imageBase = e.target.result.replace("data:image/png;base64,","");
+                console.log(imageBase);
+                $("#showImg").prop("src", "data:image/png;base64," + imageBase);
+                $.ajax({
+                    header: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    type: "post",
+                    url: "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic",
+                    async: true,
+                    data: {
+                        access_token: access_token,
+                        id_card_side: "front",
+                        image: imageBase
+                    },
+                    dataType: "json",
+                    timeout: 30000,
+                    success: function (data) {
+                        console.log("解析成功");
+                        console.log(data);
+                    },
+                    error: function (xhr) {
+                        console.log("第二步失败");
+                    }
+                });
+            }
+        }
+    </script>
+</html>
