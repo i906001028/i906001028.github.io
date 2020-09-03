@@ -30,7 +30,7 @@
             $.ajax({
         url:"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=abQIpRS2jUuD9hNZS6I8iZUf&client_secret=KxtuAqkuuqXa2AzUlz8hZDQMbwwpmQ6Z",
         type:'GET',
-        dataType:'JSONP',  // 处理Ajax跨域问题
+        dataType:'json',  // 处理Ajax跨域问题
         success: function(data){
             console.log("sss");
             $('body').append( "Name: " + data );
