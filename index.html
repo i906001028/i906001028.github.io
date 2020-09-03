@@ -1,74 +1,101 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-<!--        <meta http-equiv="Access-Control-Allow-Origin" content="*">-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+<!--    <script>-->
+<!--    var access_token = "24.6fd881532adb08bc5be250407c704dd5.2592000.1601538830.282335-22429386";-->
 
-        <title></title>
-    </head>
-    <body>
-        <input type="file" id="img" onchange="getImg(event)" />
-        <img id="showImg" src=""/>
-    </body>
-    <script type="text/javascript" src="jquery-3.3.1.min.js" ></script>
-    <script type="text/javascript">
-        var access_token = '';
+<!--    function preImg(sourceId, targetId) {-->
+<!--    if (typeof FileReader === 'undefined') {-->
+<!--        alert('Your browser does not support FileReader...');-->
+<!--        return;-->
+<!--    }-->
+<!--    var reader = new FileReader();-->
 
-        // 监听图片选择事件
-        function getImg (event) {
-                
-                $.ajax({
-                    header: {
-                        "Content-Type": "application/json"
-                    },
-                    type: "post",
-                    url: "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials",
-                    async: true,
-                    data: {
-                        client_id: "abQIpRS2jUuD9hNZS6I8iZUf",
-                        client_secret: "KxtuAqkuuqXa2AzUlz8hZDQMbwwpmQ6Z",
-                    },
-                    dataType: "json",
-                    timeout: 30000,
-                    success: function (data) {
-                        console.log("解析成功");
-                        console.log(data);
-                        access_token = data['access_token'];
-                    },
-                    error: function (xhr) {
-                        console.log("第一步失败");
-                    }
-                });
-            var imageBase = "";
-            var reader = new FileReader();
-            reader.readAsDataURL(event.target.files[0]);
-            reader.onload = function (e) {
-                imageBase = e.target.result.replace("data:image/png;base64,","");
-                console.log(imageBase);
-                $("#showImg").prop("src", "data:image/png;base64," + imageBase);
-                $.ajax({
-                    header: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    type: "post",
-                    url: "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic",
-                    async: true,
-                    data: {
-                        access_token: access_token,
-                        id_card_side: "front",
-                        image: imageBase
-                    },
-                    dataType: "json",
-                    timeout: 30000,
-                    success: function (data) {
-                        console.log("解析成功");
-                        console.log(data);
-                    },
-                    error: function (xhr) {
-                        console.log("第二步失败");
-                    }
-                });
-            }
+<!--    reader.onload = function(e) {-->
+<!--        var img = document.getElementById(targetId);-->
+<!--        img.src = this.result;-->
+<!--        $.ajax({-->
+<!--                    header: {-->
+<!--                        "Content-Type": "application/x-www-form-urlencoded"-->
+<!--                    },-->
+<!--                    type: "post",-->
+<!--                    url: "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic",-->
+<!--                    async: true,-->
+<!--                    data: {-->
+<!--                        access_token: access_token,-->
+
+<!--                        image: this.result-->
+<!--                    },-->
+<!--                    dataType: "JSONP",-->
+<!--                    timeout: 30000,-->
+<!--                    success: function (data) {-->
+<!--                        console.log("解析成功");-->
+<!--                        console.log(data);-->
+<!--                    },-->
+<!--                    error: function (xhr) {-->
+<!--                        console.log("请求解析失败");-->
+<!--                    }-->
+<!--                });-->
+
+<!--    }-->
+<!--    reader.readAsDataURL(document.getElementById(sourceId).files[0]);-->
+
+<!--}-->
+
+<!--</script>-->
+    <script>
+         function btnRst_Click() {
+                                alert("事件");
+                            }
+         //XmlHttpRequest对象
+function createXmlHttpRequest(){
+    if(window.ActiveXObject){ //如果是IE浏览器
+        return new ActiveXObject("Microsoft.XMLHTTP");
+    }else if(window.XMLHttpRequest){ //非IE浏览器
+        return new XMLHttpRequest();
+    }
+}
+
+function onLogin(){
+
+    var url = "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=abQIpRS2jUuD9hNZS6I8iZUf&client_secret=KxtuAqkuuqXa2AzUlz8hZDQMbwwpmQ6Z";
+
+    //1.创建XMLHttpRequest组建
+    xmlHttpRequest = createXmlHttpRequest();
+
+    //2.设置回调函数
+    xmlHttpRequest.onreadystatechange = zswFun;
+
+    //3.初始化XMLHttpRequest组建
+    xmlHttpRequest.open("POST",url,true);
+
+    xmlHttpRequest.setRequestHeader("dataType","JSONP");
+
+    //4.发送请求
+    xmlHttpRequest.send(null);
+}
+
+
+//回调函数
+function zswFun(){
+    if(xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200){
+        var b = xmlHttpRequest.responseText;
+        if(b == "true"){
+            alert("登录成功！");
+        }else{
+            alert("登录失败！");
         }
+    }
+}
     </script>
+</head>
+<body>
+<form action="">
+    <input type="file" name="imgOne" id="imgOne" onchange="preImg(this.id,'imgPre');" />
+    <button type="button" name="click" id="button" onclick="onLogin()"> 文字识别 </button>
+    <img id="imgPre" src="" width="400" height="600" style="display: block;"/>
+</form>
+</body>
 </html>
