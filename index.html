@@ -3,96 +3,92 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
-<!--    <script>-->
-<!--    var access_token = "24.6fd881532adb08bc5be250407c704dd5.2592000.1601538830.282335-22429386";-->
-
-<!--    function preImg(sourceId, targetId) {-->
-<!--    if (typeof FileReader === 'undefined') {-->
-<!--        alert('Your browser does not support FileReader...');-->
-<!--        return;-->
-<!--    }-->
-<!--    var reader = new FileReader();-->
-
-<!--    reader.onload = function(e) {-->
-<!--        var img = document.getElementById(targetId);-->
-<!--        img.src = this.result;-->
-<!--        $.ajax({-->
-<!--                    header: {-->
-<!--                        "Content-Type": "application/x-www-form-urlencoded"-->
-<!--                    },-->
-<!--                    type: "post",-->
-<!--                    url: "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic",-->
-<!--                    async: true,-->
-<!--                    data: {-->
-<!--                        access_token: access_token,-->
-
-<!--                        image: this.result-->
-<!--                    },-->
-<!--                    dataType: "JSONP",-->
-<!--                    timeout: 30000,-->
-<!--                    success: function (data) {-->
-<!--                        console.log("解析成功");-->
-<!--                        console.log(data);-->
-<!--                    },-->
-<!--                    error: function (xhr) {-->
-<!--                        console.log("请求解析失败");-->
-<!--                    }-->
-<!--                });-->
-
-<!--    }-->
-<!--    reader.readAsDataURL(document.getElementById(sourceId).files[0]);-->
-
-<!--}-->
-
-<!--</script>-->
     <script>
-         function btnRst_Click() {
-                                alert("事件");
-                            }
-         //XmlHttpRequest对象
-function createXmlHttpRequest(){
-    if(window.ActiveXObject){ //如果是IE浏览器
-        return new ActiveXObject("Microsoft.XMLHTTP");
-    }else if(window.XMLHttpRequest){ //非IE浏览器
-        return new XMLHttpRequest();
+    var access_token = "24.6fd881532adb08bc5be250407c704dd5.2592000.1601538830.282335-22429386";
+
+    function preImg(sourceId, targetId) {
+    if (typeof FileReader === 'undefined') {
+        alert('Your browser does not support FileReader...');
+        return;
     }
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+        var img = document.getElementById(targetId);
+        img.src = this.result;
+        $.ajax({
+                });
+
+    }
+    reader.readAsDataURL(document.getElementById(sourceId).files[0]);
+
 }
 
-function onLogin(){
+</script>
+    <script>
+        function my_ajax(){
+            $.ajax({
+        url:"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=abQIpRS2jUuD9hNZS6I8iZUf&client_secret=KxtuAqkuuqXa2AzUlz8hZDQMbwwpmQ6Z",
+        type:'GET',
+        dataType:'json',  // 处理Ajax跨域问题
+        success: function(data){
+            console.log("sss");
+            $('body').append( "Name: " + data );
 
-    var url = "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=abQIpRS2jUuD9hNZS6I8iZUf&client_secret=KxtuAqkuuqXa2AzUlz8hZDQMbwwpmQ6Z";
-
-    //1.创建XMLHttpRequest组建
-    xmlHttpRequest = createXmlHttpRequest();
-
-    //2.设置回调函数
-    xmlHttpRequest.onreadystatechange = zswFun;
-
-    //3.初始化XMLHttpRequest组建
-    xmlHttpRequest.open("POST",url,true);
-
-    //4.发送请求
-    xmlHttpRequest.send(null);
-}
-
-
-//回调函数
-function zswFun(){
-    if(xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200){
-        var b = xmlHttpRequest.responseText;
-        if(b == "true"){
-            alert("登录成功！");
-        }else{
-            alert("登录失败！");
         }
-    }
-}
+
+    });
+        }
+        function onLogin(){
+        alert('success');
+
+        //先声明一个异步请求对象
+          var xmlHttpReg = null;
+          if (window.ActiveXObject) {//如果是IE
+
+              xmlHttpReg = new ActiveXObject("Microsoft.XMLHTTP");
+
+          } else if (window.XMLHttpRequest) {
+
+              xmlHttpReg = new XMLHttpRequest(); //实例化一个xmlHttpReg
+          }
+
+          //如果实例化成功,就调用open()方法,就开始准备向服务器发送请求
+          if (xmlHttpReg != null) {
+              xmlHttpReg.open("get", "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=abQIpRS2jUuD9hNZS6I8iZUf&client_secret=KxtuAqkuuqXa2AzUlz8hZDQMbwwpmQ6Z", true);1
+              xmlHttpReg.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+
+               xmlHttpReg.send(null);
+              xmlHttpReg.onreadystatechange = doResult; //设置回调函数
+
+          }
+
+          //回调函数
+          //一旦readyState的值改变,将会调用这个函数,readyState=4表示完成相应
+
+          //设定函数doResult()
+          function doResult() {
+
+              if (xmlHttpReg.readyState == 4) {//4代表执行完成
+
+
+                  if (xmlHttpReg.status == 200) {//200代表执行成功
+                      //将xmlHttpReg.responseText的值赋给ID为resText的元素
+                      document.getElementById("resText").innerHTML = xmlHttpReg.responseText;
+
+
+                  }
+              }
+
+          }
+          }
     </script>
+
 </head>
 <body>
 <form action="">
     <input type="file" name="imgOne" id="imgOne" onchange="preImg(this.id,'imgPre');" />
-    <button type="button" name="click" id="button" onclick="onLogin()"> 文字识别 </button>
+    <button type="button" name="click" id="button" onclick="my_ajax()"> 文字识别 </button>
     <img id="imgPre" src="" width="400" height="600" style="display: block;"/>
 </form>
 </body>
